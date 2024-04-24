@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+type Props = {
+  project: CollectionEntry<"projects">;
+};
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+export const prerender = true;
+const fulltitle = "Aditya. - " + project.data.title;
+const description = project.data.description;
+---
+
+<Layout title={fulltitle} , description={description}>
+  <main class="project mx-auto flex w-9/12 flex-col gap-4">
+    <div role="list" class="flex flex-row justify-center gap-2">
+      {
+        project.data.github && (
+          <a
+            href={project.data.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none" }}
+            class="cursor-pointer text-indigo-100 hover:text-indigo-500"
+          >
+            Github
+          </a>
+        )
+      }
+      {project.data.github && project.data.website && <> / </>}
+      {
+        project.data.website && (
+          <a
+            href={project.data.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none" }}
+            class="cursor-pointer text-indigo-100 hover:text-indigo-500 "
+          >
+            Website
+          </a>
+        )
+      }
+    </div>
+
+    {
+      project.data.image && project.data.image.src && (
+        <img
+          src={project.data.image.src}
+          class="md:w-4/4 mx-auto h-auto w-full rounded-lg object-cover"
+          alt={project.data.image.alt}
+          transition:name={`${project.data.image.src} image`}
+        />
+      )
+    }
+
+    {
+      project.data.technologies && (
+        <div class="flex flex-row justify-center gap-2">
+          {project.data.technologies.map((tech) => {
+            return (
+              <img
+                src={tech.route}
+                alt={`${tech.name}`}
+                title={tech.name}
+                class="h-7"
+              />
+            );
+          })}
+        </div>
+      )
+    }
+
+    <Content />
+  </main>
+</Layout>
