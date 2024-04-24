@@ -1,6 +1,6 @@
 # 👨‍🚀 Astro - Portfolio
 
-![Template](/public/opengraph-image.jpg)
+
 
 This portfolio is created/inspired by template from [Max](https://www.maxencewolff.com).
 
